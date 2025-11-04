@@ -2,27 +2,27 @@ class Movie {
   final int? id;
   final String title;
   final int year;
-  final String director;
+  final String? director;
   final bool watched;
-  final int rating;
+  final int? rating;
 
   const Movie({
     this.id,
     required this.title,
     required this.year,
-    required this.director,
+    this.director,
     required this.watched,
-    required this.rating,
+    this.rating,
   });
 
   factory Movie.fromMap(Map<String, dynamic> movieMap) {
     return Movie(
-      id: movieMap['id'] as int,
+      id: movieMap['id'] as int?,
       title: movieMap['title'] as String,
       year: movieMap['year'] as int,
-      director: movieMap['director'] as String,
+      director: movieMap['director'] as String?,
       watched: movieMap['watched'] == 1,
-      rating: movieMap['rating'] as int,
+      rating: movieMap['rating'] as int?,
     );
   }
 
