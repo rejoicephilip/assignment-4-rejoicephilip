@@ -45,6 +45,9 @@ class _MovieListScreenState extends State<MovieListScreen> {
 
   Future<void> _addMovie() async {
     final result = await Navigator.pushNamed(context, routes.addMovie);
+    if (result == true) {
+      await _loadData();
+    }
   }
 
   Future<void> _editMovie(Movie movie) async {
@@ -53,6 +56,9 @@ class _MovieListScreenState extends State<MovieListScreen> {
       routes.editMovie,
       arguments: movie,
     );
+    if (result == true) {
+      await _loadData();
+    }
   }
 
   @override

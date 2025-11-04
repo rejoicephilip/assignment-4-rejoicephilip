@@ -36,11 +36,11 @@ class MovieListItem extends StatelessWidget {
           ),
         ],
       ),
-      trailing: Icon(
-        movie.watched ? Icons.check_circle_outline : Icons.check_circle,
-        color: movie.watched ? Colors.grey : Colors.green,
+        trailing: Icon(
+        movie.watched ? Icons.check_circle : Icons.check_circle_outline,
+        color: movie.watched ? Colors.green : Colors.grey,
       ),
       onTap: onTap,
-    );
+    ); 
   }
 }
