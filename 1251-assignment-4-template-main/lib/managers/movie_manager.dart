@@ -36,7 +36,7 @@ class MovieManager {
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE movies(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, year TEXT, director TEXT, watched INTEGER, rating INTEGER)',
+          'CREATE TABLE movies(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, year INTEGER NOT NULL, director TEXT, watched INTEGER NOT NULL, rating INTEGER)',
         );
       },
       version: _dbVersion,
@@ -47,7 +47,7 @@ class MovieManager {
 
   Future<void> closeDB() async {
     final db = await database;
-    db.close();
+    await db.close();
   }
 
   Future<int> insertMovie(Movie movie) async {
@@ -68,9 +68,27 @@ class MovieManager {
     return [for (final movieMap in movieMaps) Movie.fromMap(movieMap)];
   }
 
-  Future<void> updateMovie(Movie movie) async {
+  Future<int> updateMovie(Movie movie) async {
     final db = await database;
 
-    await db.update('movies', movie.toMap(), where: 'id = ?', whereArgs: [1]);
+    if (movie.id == null) {
+      throw ArgumentError('Movie cannot be updated with ID. Please try again.');
+    }
+
+    return db.update(
+      'movies',
+      movie.toMap(),
+      where: 'id = ?',
+      whereArgs: [movie.id],
+    );
   }
+    Future<int> deleteMovie(int id) async {
+      final db = await database;
+
+      return db.delete(
+        'movies',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    }
 }
