@@ -10,6 +10,12 @@ class MovieListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final hasDirector =
+      movie.director != null && movie.director!.trim().isNotEmpty;
+    final subtitleText =
+      '${movie.year}${hasDirector ? " - ${movie.director}" : ""}';
+
     return ListTile(
       title: Text(
         movie.title,
@@ -19,11 +25,11 @@ class MovieListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${movie.year}${movie.director.isNotEmpty ? " - ${movie.director}" : ""}',
+            subtitleText
           ),
           const SizedBox(height: 4),
           StarRating(
-            rating: movie.rating,
+            rating: movie.watched ? (movie.rating ?? 0) : 0,
             size: 16,
             isWatched: movie.watched,
             onRatingChanged: null,

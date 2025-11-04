@@ -36,7 +36,7 @@ class StarRating extends StatelessWidget {
 
         return GestureDetector(
           onTap:
-              (onRatingChanged != null) ? () => onRatingChanged!(index) : null,
+              (isWatched && onRatingChanged != null) ? () => onRatingChanged!(index + 1) : null,
           child: Icon(icon, color: color, size: size),
         );
       }),

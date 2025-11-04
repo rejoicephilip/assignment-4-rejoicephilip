@@ -32,9 +32,11 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _loadPreferences() async {
     final isFirstRun = await _prefsManager.isFirstRun();
+    final savedDarkMode = await _prefsManager.getDarkMode();
 
     setState(() {
       _isFirstRun = isFirstRun;
+      _darkMode = savedDarkMode;
       _isLoading = false;
     });
   }

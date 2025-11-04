@@ -5,28 +5,28 @@ class PreferencesManager {
 
   static const PreferencesManager instance = PreferencesManager._();
 
-  static const String _keyuserName = 'username';
-  static const String _keydarkMode = 'darkmode';
+  static const String _keyUsername = 'username';
+  static const String _keyDarkMode = 'darkMode';
   static const String _keyIsFirstRun = 'is_first_run';
 
   Future<void> setUserName(String userName) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_keyuserName, userName);
+    await prefs.setString(_keyUsername, userName);
   }
 
   Future<String?> getUserName() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_keyuserName);
+    return prefs.getString(_keyUsername);
   }
 
   Future<void> setDarkMode(bool darkMode) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keydarkMode, darkMode);
+    await prefs.setBool(_keyDarkMode, darkMode);
   }
 
   Future<bool> getDarkMode() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_keydarkMode) ?? false;
+    return prefs.getBool(_keyDarkMode) ?? false;
   }
 
   Future<bool> isFirstRun() async {
