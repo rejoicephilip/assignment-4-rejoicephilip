@@ -20,6 +20,8 @@ class _MovieFormScreenState extends State<MovieFormScreen> {
 
   bool _watched = false;
   int _rating = 0;
+  String? _ratingError;
+  
   final _movieManager = MovieManager.instance;
 
   @override
@@ -29,9 +31,9 @@ class _MovieFormScreenState extends State<MovieFormScreen> {
     if (widget.movie != null) {
       _titleController.text = widget.movie!.title;
       _yearController.text = widget.movie!.year.toString();
-      _directorController.text = widget.movie!.director;
+      _directorController.text = widget.movie!.director ?? '';
       _watched = widget.movie!.watched;
-      _rating = widget.movie!.rating;
+      _rating = widget.movie!.rating ?? 0;
     }
   }
 
@@ -44,26 +46,38 @@ class _MovieFormScreenState extends State<MovieFormScreen> {
   }
 
   bool _validateForm() {
-    final isValid = _formKey.currentState!.validate();
-
-    if (!isValid) {
-      return false;
-    }
-    return true;
+    return _formKey.currentState!.validate();
   }
 
   Future<void> _saveMovie() async {
-    _validateForm();
 
-    final year = int.parse(_yearController.text);
+    setState(() {
+      _ratingError = null;
+    });
+
+    final isValid = _validateForm();
+    if (!isValid) {
+      return;
+    }
+
+    if (_watched && _rating == 0){
+      setState(() {
+        _ratingError = 'Please add a rating for watched movies';
+      });
+      return;
+    }
+
+    final year = int.parse(_yearController.text.trim());
 
     final movie = Movie(
       id: widget.movie?.id,
       title: _titleController.text,
       year: year,
-      director: _directorController.text,
+      director: _directorController.text.trim().isEmpty
+        ? null
+        : _directorController.text.trim(),
       watched: _watched,
-      rating: _rating,
+      rating: _watched ? _rating : null,
     );
 
     if (widget.movie == null) {
@@ -113,6 +127,17 @@ class _MovieFormScreenState extends State<MovieFormScreen> {
                   if (value == null || value.trim().isEmpty) {
                     return 'Please enter a year';
                   }
+                  
+                  final trimmed = value.trim();
+                  final parsedYear = int.tryParse(trimmed);
+                  if (parsedYear == null) {
+                    return 'Please enter a valid number';
+                  }
+
+                  if (parsedYear < 1888 || parsedYear > 2025) {
+                    return 'Year must be between 1888 and 2025';
+                  }
+                  
                   return null;
                 },
                 keyboardType: TextInputType.number,
@@ -134,6 +159,7 @@ class _MovieFormScreenState extends State<MovieFormScreen> {
                     _watched = value;
                     if (!value) {
                       _rating = 0;
+                      _ratingError = null;
                     }
                   });
                 },
@@ -148,10 +174,20 @@ class _MovieFormScreenState extends State<MovieFormScreen> {
                         ? (rating) {
                           setState(() {
                             _rating = rating;
-                          });
+                            _ratingError = null;  
+                            });
                         }
                         : null,
               ),
+              if (_ratingError != null) ...[
+                  const SizedBox(height:4),
+                  Text(
+                    _ratingError!,
+                    style: TextStyle( color: Theme.of(context).colorScheme.error,
+                    fontSize: 12,
+                    ),
+                  ),
+              ],
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _saveMovie,
